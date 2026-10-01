@@ -1,0 +1,7 @@
+data/
+notebooks/
+docs/
+tests/
+reports/figures/
+.venv/
+node_modules/

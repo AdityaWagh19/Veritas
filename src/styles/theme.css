@@ -1,0 +1,343 @@
+/* -------------------------------------------------------------------------
+   Fake News Detection & Similar News Retrieval — Restrained Editorial Theme
+   Adapted from xAI Style Reference (DESIGN.md)
+   ------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces */
+  --app-paper: #ffffff;
+  --app-cream: #f9f8f6;
+  --app-sand: #f2ede5;
+  --app-charcoal: #151515;
+
+  /* Inks & Text */
+  --app-ink: #0a0a0a;
+  --app-steel: #545454;
+  --app-fog: #858585;
+  --app-pewter: #9d9d9d;
+
+  /* Borders & Dividers */
+  --app-border: #d5d9e2;
+  --app-border-subtle: #e8ebf0;
+
+  /* Semantic Feedback */
+  --app-fake-ink: #b42318;
+  --app-fake-bg: #fef3f2;
+  --app-fake-border: #fee4e2;
+
+  --app-real-ink: #067647;
+  --app-real-bg: #ecfdf3;
+  --app-real-border: #d1fadf;
+
+  --app-alert-ink: #b54708;
+  --app-alert-bg: #fffaeb;
+  --app-alert-border: #fedf89;
+
+  /* Bootstrap Variable Overrides */
+  --bs-body-bg: var(--app-paper);
+  --bs-body-color: var(--app-steel);
+  --bs-body-font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --bs-heading-color: var(--app-ink);
+  --bs-border-color: var(--app-border);
+  --bs-border-radius: 16px;
+  --bs-border-radius-sm: 8px;
+  --bs-border-radius-lg: 16px;
+  --bs-border-radius-pill: 9999px;
+}
+
+/* Global Typography */
+body {
+  background-color: var(--app-paper);
+  color: var(--app-steel);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .display-heading {
+  color: var(--app-ink);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.mono-text, code, pre, .badge-mono {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace !important;
+}
+
+/* App Layout Container */
+.app-container {
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Top Navigation Bar */
+.app-navbar {
+  background-color: var(--app-paper) !important;
+  border-bottom: 1px solid var(--app-border);
+  height: 64px;
+}
+
+.navbar-brand-custom {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--app-ink) !important;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link-custom {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--app-fog) !important;
+  padding: 6px 14px !important;
+  border-radius: 9999px;
+  transition: all 0.15s ease-in-out;
+}
+
+.nav-link-custom:hover {
+  color: var(--app-ink) !important;
+  background-color: var(--app-cream);
+}
+
+.nav-link-custom.active {
+  color: var(--app-ink) !important;
+  background-color: var(--app-sand);
+}
+
+/* Pill Buttons */
+.btn-pill-primary {
+  background-color: var(--app-ink) !important;
+  color: #ffffff !important;
+  border: 1px solid var(--app-ink) !important;
+  border-radius: 9999px !important;
+  padding: 10px 22px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em;
+  transition: background-color 0.15s ease;
+}
+
+.btn-pill-primary:hover:not(:disabled) {
+  background-color: #262626 !important;
+  border-color: #262626 !important;
+  color: #ffffff !important;
+}
+
+.btn-pill-primary:disabled {
+  opacity: 0.6;
+}
+
+.btn-pill-ghost {
+  background-color: transparent !important;
+  color: var(--app-ink) !important;
+  border: 1px solid var(--app-border) !important;
+  border-radius: 9999px !important;
+  padding: 6px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease;
+}
+
+.btn-pill-ghost:hover {
+  background-color: var(--app-cream) !important;
+  border-color: var(--app-ink) !important;
+}
+
+.btn-pill-ghost.active {
+  background-color: var(--app-ink) !important;
+  color: #ffffff !important;
+  border-color: var(--app-ink) !important;
+}
+
+/* Control Pills (segmented buttons) */
+.segmented-control {
+  display: inline-flex;
+  background-color: var(--app-cream);
+  padding: 3px;
+  border-radius: 9999px;
+  border: 1px solid var(--app-border);
+}
+
+.segmented-control-btn {
+  background: transparent;
+  border: none;
+  border-radius: 9999px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--app-fog);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.segmented-control-btn.active {
+  background-color: #ffffff;
+  color: var(--app-ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Flat Cream Cards */
+.card-cream {
+  background-color: var(--app-cream);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.card-paper {
+  background-color: var(--app-paper);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+/* Form Controls */
+.form-control-editorial {
+  background-color: var(--app-paper) !important;
+  border: 1px solid var(--app-border) !important;
+  border-radius: 8px !important;
+  color: var(--app-ink) !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  padding: 12px 14px !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control-editorial:focus {
+  border-color: var(--app-ink) !important;
+  box-shadow: 0 0 0 1px var(--app-ink) !important;
+  outline: none !important;
+}
+
+/* Semantic Status Pills */
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.pill-fake {
+  background-color: var(--app-fake-bg);
+  color: var(--app-fake-ink);
+  border: 1px solid var(--app-fake-border);
+}
+
+.pill-real {
+  background-color: var(--app-real-bg);
+  color: var(--app-real-ink);
+  border: 1px solid var(--app-real-border);
+}
+
+.pill-neutral {
+  background-color: var(--app-sand);
+  color: var(--app-ink);
+  border: 1px solid var(--app-border);
+}
+
+.pill-alert {
+  background-color: var(--app-alert-bg);
+  color: var(--app-alert-ink);
+  border: 1px solid var(--app-alert-border);
+}
+
+/* Term Badges */
+.term-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9999px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 3px;
+}
+
+.term-chip-fake {
+  background-color: var(--app-fake-bg);
+  color: var(--app-fake-ink);
+  border: 1px solid var(--app-fake-border);
+}
+
+.term-chip-real {
+  background-color: var(--app-real-bg);
+  color: var(--app-real-ink);
+  border: 1px solid var(--app-real-border);
+}
+
+/* Slim Custom Progress Bar */
+.progress-editorial {
+  height: 6px;
+  background-color: var(--app-sand);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar-fake {
+  background-color: var(--app-fake-ink);
+}
+
+.progress-bar-real {
+  background-color: var(--app-real-ink);
+}
+
+/* Monospace Stat Blocks */
+.stat-box {
+  padding: 16px 20px;
+  background-color: var(--app-paper);
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+}
+
+.stat-value {
+  font-family: 'Geist Mono', monospace;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--app-ink);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--app-fog);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Similar News Table */
+.similar-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.similar-table th {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--app-fog);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.similar-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--app-border-subtle);
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.similar-table tr:last-child td {
+  border-bottom: none;
+}

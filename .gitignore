@@ -1,0 +1,10 @@
+.venv/
+node_modules/
+dist/
+__pycache__/
+.ipynb_checkpoints/
+.env*
+.vercel/
+data/raw/
+data/processed/
+# Note: models/ is intentionally NOT ignored so Vercel can bundle the trained artifacts
