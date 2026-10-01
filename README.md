@@ -1,7 +1,5 @@
 # Veritas — Fake News Detection & Similar News Retrieval
 > **SPPU | Information Retrieval (IR) | Mini Project**  
-> Veritas is an Information Retrieval-powered system that classifies news articles as Fake or Real, ranks and retrieves top-$K$ supporting documents from the WELFake corpus using the Vector Space Model (TF-IDF Cosine) and BM25 Okapi, and provides lexical explainability.
-
 ---
 
 ## 1. Project Summary & Objectives
@@ -20,7 +18,7 @@
 
 ---
 
-## 2. What Makes This an IR Project (Syllabus Mapping)
+## Syllabus Mapping
 
 | IR Syllabus Concept | Implementation in this Project |
 |---|---|
