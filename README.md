@@ -18,7 +18,7 @@
 
 ---
 
-## Syllabus Mapping
+## 2. Syllabus Mapping
 
 | IR Syllabus Concept | Implementation in this Project |
 |---|---|
