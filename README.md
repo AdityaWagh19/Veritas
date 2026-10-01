@@ -1,4 +1,4 @@
-# Veritas — Fake News Detection & Similar News Retrieval
+# Veritas - Fake News Detection & Similar News Retrieval
 > **SPPU | Information Retrieval (IR) | Mini Project**  
 ---
 
