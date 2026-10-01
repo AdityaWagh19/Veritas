@@ -1,51 +1,51 @@
 /* -------------------------------------------------------------------------
-   Fake News Detection & Similar News Retrieval — Restrained Editorial Theme
-   Adapted from xAI Style Reference (DESIGN.md)
+   Veritas — Minimalist Editorial Design System
+   No pills, clean geometry, restrained contrast, intuitive UX
    ------------------------------------------------------------------------- */
 
 :root {
   /* Surfaces */
   --app-paper: #ffffff;
-  --app-cream: #f9f8f6;
-  --app-sand: #f2ede5;
-  --app-charcoal: #151515;
+  --app-cream: #faf9f6;
+  --app-sand: #f3f1ec;
+  --app-surface-subtle: #f6f7f9;
+  --app-charcoal: #111111;
 
-  /* Inks & Text */
-  --app-ink: #0a0a0a;
-  --app-steel: #545454;
-  --app-fog: #858585;
-  --app-pewter: #9d9d9d;
+  /* Inks & Typography */
+  --app-ink: #0e0e0e;
+  --app-steel: #4a4d53;
+  --app-fog: #767b85;
+  --app-pewter: #9ea3ae;
 
   /* Borders & Dividers */
-  --app-border: #d5d9e2;
-  --app-border-subtle: #e8ebf0;
+  --app-border: #dcdfe4;
+  --app-border-subtle: #ebedf2;
 
   /* Semantic Feedback */
   --app-fake-ink: #b42318;
   --app-fake-bg: #fef3f2;
-  --app-fake-border: #fee4e2;
+  --app-fake-border: #fecdca;
 
   --app-real-ink: #067647;
   --app-real-bg: #ecfdf3;
-  --app-real-border: #d1fadf;
+  --app-real-border: #a6f4c5;
 
   --app-alert-ink: #b54708;
   --app-alert-bg: #fffaeb;
   --app-alert-border: #fedf89;
 
-  /* Bootstrap Variable Overrides */
+  /* Bootstrap Global Overrides */
   --bs-body-bg: var(--app-paper);
   --bs-body-color: var(--app-steel);
   --bs-body-font-family: 'Inter', system-ui, -apple-system, sans-serif;
   --bs-heading-color: var(--app-ink);
   --bs-border-color: var(--app-border);
-  --bs-border-radius: 16px;
-  --bs-border-radius-sm: 8px;
-  --bs-border-radius-lg: 16px;
-  --bs-border-radius-pill: 9999px;
+  --bs-border-radius: 6px;
+  --bs-border-radius-sm: 4px;
+  --bs-border-radius-lg: 8px;
 }
 
-/* Global Typography */
+/* Global Reset & Base */
 body {
   background-color: var(--app-paper);
   color: var(--app-steel);
@@ -54,30 +54,30 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6, .display-heading {
+h1, h2, h3, h4, h5, h6 {
   color: var(--app-ink);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.025em;
 }
 
-.mono-text, code, pre, .badge-mono {
+.mono-text, code, pre {
   font-family: 'Geist Mono', 'JetBrains Mono', monospace !important;
 }
 
-/* App Layout Container */
+/* Container */
 .app-container {
-  max-width: 1040px;
+  max-width: 980px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
-/* Top Navigation Bar */
+/* Navigation - Clean Understated Minimalist */
 .app-navbar {
   background-color: var(--app-paper) !important;
   border-bottom: 1px solid var(--app-border);
-  height: 64px;
+  height: 58px;
 }
 
 .navbar-brand-custom {
@@ -91,194 +91,168 @@ h1, h2, h3, h4, h5, h6, .display-heading {
 }
 
 .nav-link-custom {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--app-fog) !important;
-  padding: 6px 14px !important;
-  border-radius: 9999px;
-  transition: all 0.15s ease-in-out;
+  padding: 6px 12px !important;
+  border-radius: 4px;
+  transition: all 0.12s ease;
 }
 
 .nav-link-custom:hover {
   color: var(--app-ink) !important;
-  background-color: var(--app-cream);
+  background-color: var(--app-surface-subtle);
 }
 
 .nav-link-custom.active {
   color: var(--app-ink) !important;
   background-color: var(--app-sand);
+  font-weight: 600;
 }
 
-/* Pill Buttons */
-.btn-pill-primary {
+/* Clean Minimal Buttons (No Pills) */
+.btn-clean-primary {
   background-color: var(--app-ink) !important;
   color: #ffffff !important;
   border: 1px solid var(--app-ink) !important;
-  border-radius: 9999px !important;
-  padding: 10px 22px !important;
+  border-radius: 5px !important;
+  padding: 9px 20px !important;
   font-size: 14px !important;
   font-weight: 500 !important;
   letter-spacing: -0.01em;
-  transition: background-color 0.15s ease;
+  transition: background-color 0.12s ease;
 }
 
-.btn-pill-primary:hover:not(:disabled) {
-  background-color: #262626 !important;
-  border-color: #262626 !important;
+.btn-clean-primary:hover:not(:disabled) {
+  background-color: #2b2b2b !important;
+  border-color: #2b2b2b !important;
   color: #ffffff !important;
 }
 
-.btn-pill-primary:disabled {
-  opacity: 0.6;
+.btn-clean-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
-.btn-pill-ghost {
+.btn-clean-subtle {
   background-color: transparent !important;
-  color: var(--app-ink) !important;
+  color: var(--app-steel) !important;
   border: 1px solid var(--app-border) !important;
-  border-radius: 9999px !important;
-  padding: 6px 14px !important;
-  font-size: 13px !important;
+  border-radius: 4px !important;
+  padding: 5px 11px !important;
+  font-size: 12px !important;
   font-weight: 500 !important;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
 }
 
-.btn-pill-ghost:hover {
-  background-color: var(--app-cream) !important;
-  border-color: var(--app-ink) !important;
+.btn-clean-subtle:hover {
+  background-color: var(--app-surface-subtle) !important;
+  color: var(--app-ink) !important;
+  border-color: var(--app-steel) !important;
 }
 
-.btn-pill-ghost.active {
+.btn-clean-subtle.active {
   background-color: var(--app-ink) !important;
   color: #ffffff !important;
   border-color: var(--app-ink) !important;
 }
 
-/* Control Pills (segmented buttons) */
-.segmented-control {
+/* Minimal Tab / Segmented Bar (No Pills) */
+.segmented-bar {
   display: inline-flex;
-  background-color: var(--app-cream);
-  padding: 3px;
-  border-radius: 9999px;
+  background-color: var(--app-surface-subtle);
+  padding: 2px;
+  border-radius: 5px;
   border: 1px solid var(--app-border);
 }
 
-.segmented-control-btn {
+.segmented-bar-btn {
   background: transparent;
   border: none;
-  border-radius: 9999px;
-  padding: 5px 12px;
-  font-size: 13px;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--app-fog);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.12s ease;
 }
 
-.segmented-control-btn.active {
+.segmented-bar-btn.active {
   background-color: #ffffff;
   color: var(--app-ink);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-/* Flat Cream Cards */
+/* Minimal Cards (Clean Rectangles, Subtle Borders) */
+.card-clean {
+  background-color: var(--app-paper);
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  padding: 20px;
+}
+
 .card-cream {
   background-color: var(--app-cream);
   border: 1px solid var(--app-border);
-  border-radius: 16px;
-  padding: 24px;
-}
-
-.card-paper {
-  background-color: var(--app-paper);
-  border: 1px solid var(--app-border);
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: 6px;
+  padding: 20px;
 }
 
 /* Form Controls */
-.form-control-editorial {
+.form-control-minimal {
   background-color: var(--app-paper) !important;
   border: 1px solid var(--app-border) !important;
-  border-radius: 8px !important;
+  border-radius: 5px !important;
   color: var(--app-ink) !important;
   font-size: 14px !important;
   line-height: 1.6 !important;
-  padding: 12px 14px !important;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  padding: 10px 12px !important;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
 }
 
-.form-control-editorial:focus {
+.form-control-minimal:focus {
   border-color: var(--app-ink) !important;
   box-shadow: 0 0 0 1px var(--app-ink) !important;
   outline: none !important;
 }
 
-/* Semantic Status Pills */
-.pill-badge {
+/* Minimal Semantic Tags (Clean Rectangles, No Pills) */
+.tag-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  border-radius: 9999px;
-  padding: 4px 12px;
-  font-size: 12px;
+  gap: 5px;
+  border-radius: 3px;
+  padding: 2px 7px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
-.pill-fake {
+.tag-fake {
   background-color: var(--app-fake-bg);
   color: var(--app-fake-ink);
   border: 1px solid var(--app-fake-border);
 }
 
-.pill-real {
+.tag-real {
   background-color: var(--app-real-bg);
   color: var(--app-real-ink);
   border: 1px solid var(--app-real-border);
 }
 
-.pill-neutral {
-  background-color: var(--app-sand);
-  color: var(--app-ink);
+.tag-neutral {
+  background-color: var(--app-surface-subtle);
+  color: var(--app-steel);
   border: 1px solid var(--app-border);
 }
 
-.pill-alert {
-  background-color: var(--app-alert-bg);
-  color: var(--app-alert-ink);
-  border: 1px solid var(--app-alert-border);
-}
-
-/* Term Badges */
-.term-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 9999px;
-  padding: 3px 10px;
-  font-size: 12px;
-  font-weight: 500;
-  margin: 3px;
-}
-
-.term-chip-fake {
-  background-color: var(--app-fake-bg);
-  color: var(--app-fake-ink);
-  border: 1px solid var(--app-fake-border);
-}
-
-.term-chip-real {
-  background-color: var(--app-real-bg);
-  color: var(--app-real-ink);
-  border: 1px solid var(--app-real-border);
-}
-
-/* Slim Custom Progress Bar */
-.progress-editorial {
-  height: 6px;
-  background-color: var(--app-sand);
-  border-radius: 9999px;
+/* Minimal Progress Bars */
+.progress-minimal {
+  height: 5px;
+  background-color: var(--app-border-subtle);
+  border-radius: 2px;
   overflow: hidden;
 }
 
@@ -290,24 +264,24 @@ h1, h2, h3, h4, h5, h6, .display-heading {
   background-color: var(--app-real-ink);
 }
 
-/* Monospace Stat Blocks */
-.stat-box {
-  padding: 16px 20px;
+/* Minimal Stat Blocks */
+.stat-box-minimal {
+  padding: 14px 16px;
   background-color: var(--app-paper);
   border: 1px solid var(--app-border);
-  border-radius: 12px;
+  border-radius: 5px;
 }
 
 .stat-value {
   font-family: 'Geist Mono', monospace;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 600;
   color: var(--app-ink);
   line-height: 1.1;
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--app-fog);
   margin-top: 4px;
   text-transform: uppercase;
@@ -315,29 +289,45 @@ h1, h2, h3, h4, h5, h6, .display-heading {
 }
 
 /* Similar News Table */
-.similar-table {
-  border-collapse: separate;
-  border-spacing: 0;
+.clean-table {
   width: 100%;
+  border-collapse: collapse;
 }
 
-.similar-table th {
-  font-size: 12px;
-  font-weight: 500;
+.clean-table th {
+  font-size: 11px;
+  font-weight: 600;
   color: var(--app-fog);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--app-border);
 }
 
-.similar-table td {
-  padding: 14px;
+.clean-table td {
+  padding: 12px;
   border-bottom: 1px solid var(--app-border-subtle);
-  font-size: 14px;
+  font-size: 13px;
   vertical-align: top;
 }
 
-.similar-table tr:last-child td {
+.clean-table tr:last-child td {
   border-bottom: none;
+}
+
+/* Token Highlighter */
+.token-highlight-fake {
+  background-color: var(--app-fake-bg);
+  color: var(--app-fake-ink);
+  border-bottom: 2px solid var(--app-fake-border);
+  padding: 0 2px;
+  font-weight: 500;
+}
+
+.token-highlight-real {
+  background-color: var(--app-real-bg);
+  color: var(--app-real-ink);
+  border-bottom: 2px solid var(--app-real-border);
+  padding: 0 2px;
+  font-weight: 500;
 }

@@ -1,90 +1,80 @@
 import React from "react";
-import { Alert } from "react-bootstrap";
 
 export default function PredictionCard({ result, selectedModel, selectedRetriever }) {
   if (!result) return null;
 
   const isFake = result.label.toLowerCase() === "fake";
   const confidencePct = Math.round(result.confidence * 100);
+  const vote = result.vote || {};
+  const fakePct = Math.round((vote.fake_pct || 0) * 100);
+  const realPct = Math.round((vote.real_pct || 0) * 100);
 
   return (
-    <div className="card-cream mb-4">
-      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+    <div
+      className="card-clean mb-3"
+      style={{
+        borderLeft: `4px solid ${isFake ? "var(--app-fake-ink)" : "var(--app-real-ink)"}`,
+      }}
+    >
+      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        {/* Verdict & Context */}
         <div>
-          <span className="mono-text" style={{ fontSize: "12px", color: "var(--app-fog)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Classification Verdict
-          </span>
-          <div className="d-flex align-items-center gap-3 mt-1">
+          <div className="d-flex align-items-center gap-2 mb-1">
             <span
-              className={`pill-badge ${isFake ? "pill-fake" : "pill-real"}`}
-              style={{ fontSize: "16px", padding: "6px 18px", fontWeight: 700 }}
+              className={`tag-badge ${isFake ? "tag-fake" : "tag-real"}`}
+              style={{ fontSize: "12px", padding: "3px 8px" }}
             >
-              <span
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  backgroundColor: isFake ? "var(--app-fake-ink)" : "var(--app-real-ink)",
-                }}
-              />
-              {result.label.toUpperCase()} NEWS
+              {isFake ? "POTENTIAL MISINFORMATION" : "VERIFIED / CREDIBLE PATTERN"}
             </span>
-            <span className="mono-text" style={{ fontSize: "14px", color: "var(--app-steel)" }}>
-              {isFake ? "Misinformation Patterns Detected" : "Credible Editorial Patterns Detected"}
+            <span style={{ fontSize: "12px", color: "var(--app-fog)" }}>
+              via {selectedModel.toUpperCase()} + {selectedRetriever.toUpperCase()}
             </span>
+          </div>
+
+          <h3 style={{ fontSize: "18px", fontWeight: 600, margin: "6px 0 2px 0", color: "var(--app-ink)" }}>
+            {isFake
+              ? "Stylistic & lexical deception patterns detected"
+              : "Standard factual & journalistic patterns detected"}
+          </h3>
+
+          <div style={{ fontSize: "13px", color: "var(--app-steel)" }}>
+            Neighbor consensus: <strong>{isFake ? `${fakePct}% Fake` : `${realPct}% Real`}</strong> among top reference matches.
           </div>
         </div>
 
-        <div className="text-end">
-          <div className="mono-text" style={{ fontSize: "28px", fontWeight: 700, color: "var(--app-ink)", lineHeight: 1 }}>
-            {confidencePct}%
+        {/* Confidence Gauge */}
+        <div className="text-start text-sm-end" style={{ minWidth: "140px" }}>
+          <div className="d-flex align-items-baseline gap-1 justify-content-sm-end">
+            <span className="mono-text" style={{ fontSize: "30px", fontWeight: 700, color: "var(--app-ink)", lineHeight: 1 }}>
+              {confidencePct}%
+            </span>
           </div>
-          <span className="mono-text" style={{ fontSize: "11px", color: "var(--app-pewter)", letterSpacing: "0.04em" }}>
-            CALIBRATED CONFIDENCE
+          <span style={{ fontSize: "11px", color: "var(--app-fog)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+            Confidence Score
           </span>
+          <div className="progress-minimal mt-1" style={{ width: "100%", maxWidth: "150px" }}>
+            <div
+              className={isFake ? "progress-bar-fake" : "progress-bar-real"}
+              style={{ width: `${confidencePct}%`, height: "100%" }}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Confidence Bar */}
-      <div className="progress-editorial mb-3">
-        <div
-          className={isFake ? "progress-bar-fake" : "progress-bar-real"}
-          style={{
-            width: `${confidencePct}%`,
-            height: "100%",
-            transition: "width 0.4s ease-out",
-          }}
-        />
-      </div>
-
-      {/* Meta details & Latency */}
-      <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 pt-2" style={{ borderTop: "1px solid var(--app-border-subtle)" }}>
-        <div className="d-flex align-items-center gap-2">
-          <span className="pill-badge pill-neutral" style={{ fontSize: "11px", padding: "2px 8px" }}>
-            Model: {selectedModel.toUpperCase()}
-          </span>
-          <span className="pill-badge pill-neutral" style={{ fontSize: "11px", padding: "2px 8px" }}>
-            Retriever: {selectedRetriever.toUpperCase()}
-          </span>
-        </div>
-        <span className="mono-text" style={{ fontSize: "12px", color: "var(--app-fog)" }}>
-          Inference Latency: <strong>{result.latency_ms} ms</strong>
-        </span>
-      </div>
-
-      {/* Warnings & Agreement Notice */}
+      {/* Discrepancy or Warning Notice */}
       {result.warnings && result.warnings.length > 0 && (
-        <div className="mt-3">
-          {result.warnings.map((warn, i) => (
-            <Alert
-              key={i}
-              className="pill-alert m-0 mb-2 py-2 px-3 d-flex align-items-center gap-2"
-              style={{ fontSize: "13px", borderRadius: "10px" }}
-            >
-              <span>⚠️</span>
-              <span>{warn}</span>
-            </Alert>
-          ))}
+        <div
+          className="mt-3 p-2 px-3 d-flex align-items-center gap-2"
+          style={{
+            backgroundColor: "var(--app-alert-bg)",
+            border: "1px solid var(--app-alert-border)",
+            borderRadius: "4px",
+            fontSize: "12.5px",
+            color: "var(--app-alert-ink)",
+          }}
+        >
+          <span>⚠️</span>
+          <span>{result.warnings[0]}</span>
         </div>
       )}
     </div>

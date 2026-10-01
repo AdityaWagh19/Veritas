@@ -24,56 +24,56 @@ export default function AppNavbar({ activeTab, onSelectTab }) {
   return (
     <Navbar className="app-navbar sticky-top">
       <Container className="app-container d-flex justify-content-between align-items-center">
-        <div className="d-flex align-items-center gap-3">
+        <div className="d-flex align-items-center gap-2">
           <Navbar.Brand
             className="navbar-brand-custom m-0"
             role="button"
             onClick={() => onSelectTab("analyse")}
+            style={{ cursor: "pointer" }}
           >
             <span
               style={{
                 display: "inline-block",
-                width: "12px",
-                height: "12px",
-                backgroundColor: "#0a0a0a",
-                borderRadius: "9999px",
+                width: "9px",
+                height: "9px",
+                backgroundColor: "var(--app-ink)",
+                borderRadius: "2px",
               }}
             />
             Veritas
           </Navbar.Brand>
-          <span className="pill-badge pill-neutral" style={{ fontSize: "11px", padding: "2px 8px" }}>
-            IR Mini Project
+          <span className="tag-badge tag-neutral d-none d-sm-inline-flex" style={{ fontSize: "10px" }}>
+            IR System
           </span>
         </div>
 
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-1">
           <Nav activeKey={activeTab} onSelect={onSelectTab} className="d-flex gap-1">
             <Nav.Link eventKey="analyse" className={`nav-link-custom ${activeTab === "analyse" ? "active" : ""}`}>
-              Analyse
+              Verify
             </Nav.Link>
             <Nav.Link eventKey="dashboard" className={`nav-link-custom ${activeTab === "dashboard" ? "active" : ""}`}>
-              Dashboard
+              Benchmarks
             </Nav.Link>
             <Nav.Link eventKey="about" className={`nav-link-custom ${activeTab === "about" ? "active" : ""}`}>
-              About
+              Methodology
             </Nav.Link>
           </Nav>
 
           <div
             className="d-none d-md-flex align-items-center gap-2 ms-3 ps-3"
-            style={{ borderLeft: "1px solid var(--app-border)" }}
+            style={{ borderLeft: "1px solid var(--app-border-subtle)" }}
           >
             <span
               style={{
-                width: "8px",
-                height: "8px",
+                width: "6px",
+                height: "6px",
                 borderRadius: "50%",
-                backgroundColor: health.models_loaded ? "#28c840" : "#ffbd2e",
+                backgroundColor: health.models_loaded ? "#12b76a" : "#f79009",
               }}
-              title={health.models_loaded ? "Models active and cached" : "Models loading / cold"}
             />
             <span className="mono-text" style={{ fontSize: "11px", color: "var(--app-fog)" }}>
-              {health.models_loaded ? "Models Loaded" : "Engine Standby"}
+              {health.models_loaded ? "Engine Ready" : "Standby"}
             </span>
           </div>
         </div>

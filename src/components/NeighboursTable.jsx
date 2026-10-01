@@ -7,83 +7,85 @@ export default function NeighboursTable({ neighbours = [], vote = {}, retriever 
   const realPct = Math.round((vote.real_pct || 0) * 100);
 
   return (
-    <div className="card-paper mb-4">
-      <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+    <div className="card-clean mb-4">
+      {/* Header */}
+      <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <div>
-          <h5 style={{ fontSize: "16px", margin: 0, fontWeight: 600 }}>
-            Ranked Evidence Retrieval (Top-{neighbours.length})
-          </h5>
-          <span style={{ fontSize: "13px", color: "var(--app-fog)" }}>
-            Similar documents retrieved from the indexed training corpus via{" "}
-            <strong>{retriever === "bm25" ? "BM25 Okapi" : "TF-IDF Cosine Dot Product"}</strong>.
+          <h4 style={{ fontSize: "15px", fontWeight: 600, margin: 0, color: "var(--app-ink)" }}>
+            Corroborating Reference Stories (Top {neighbours.length})
+          </h4>
+          <span style={{ fontSize: "12.5px", color: "var(--app-fog)" }}>
+            Similar articles retrieved via {retriever === "bm25" ? "BM25 Okapi" : "TF-IDF Cosine"} for cross-verification.
           </span>
         </div>
 
-        {/* Neighbour Vote Consensus Strip */}
-        <div className="d-flex align-items-center gap-3 p-2 px-3" style={{ backgroundColor: "var(--app-cream)", borderRadius: "9999px", border: "1px solid var(--app-border)" }}>
-          <span className="mono-text" style={{ fontSize: "12px", color: "var(--app-steel)" }}>
-            Neighbor Consensus:
+        {/* Minimal Consensus Bar */}
+        <div className="d-flex align-items-center gap-2">
+          <span style={{ fontSize: "12px", color: "var(--app-steel)" }}>Corpus match:</span>
+          <span className="tag-badge tag-neutral" style={{ fontSize: "11px" }}>
+            {fakePct}% Fake · {realPct}% Real
           </span>
-          <div className="d-flex align-items-center gap-2">
-            <span className="pill-badge pill-fake" style={{ fontSize: "11px", padding: "2px 8px" }}>
-              {fakePct}% Fake
-            </span>
-            <span className="pill-badge pill-real" style={{ fontSize: "11px", padding: "2px 8px" }}>
-              {realPct}% Real
-            </span>
-          </div>
           {vote.agrees ? (
-            <span className="mono-text" style={{ fontSize: "11px", color: "var(--app-real-ink)", fontWeight: 600 }}>
-              ✓ High Agreement
+            <span style={{ fontSize: "11px", color: "var(--app-real-ink)", fontWeight: 600 }}>
+              ✓ Consistent
             </span>
           ) : (
-            <span className="mono-text" style={{ fontSize: "11px", color: "var(--app-alert-ink)", fontWeight: 600 }}>
-              ⚠️ Low Agreement
+            <span style={{ fontSize: "11px", color: "var(--app-alert-ink)", fontWeight: 600 }}>
+              ⚠️ Divergent
             </span>
           )}
         </div>
       </div>
 
-      {/* Retrieved Documents Table */}
+      {/* Clean Table */}
       <div className="table-responsive">
-        <table className="similar-table">
+        <table className="clean-table">
           <thead>
             <tr>
-              <th style={{ width: "60px" }}>Rank</th>
-              <th style={{ width: "110px" }}>Score</th>
-              <th style={{ width: "90px" }}>Corpus Label</th>
-              <th>Article Title & Content Snippet</th>
+              <th style={{ width: "40px" }}>#</th>
+              <th style={{ width: "95px" }}>Status</th>
+              <th style={{ width: "90px" }}>Match</th>
+              <th>Article Headline & Snippet</th>
             </tr>
           </thead>
           <tbody>
             {neighbours.map((item, index) => {
               const isItemFake = item.label.toLowerCase() === "fake";
+              // Calculate a visual normalized match percentage
+              const scoreVal = typeof item.score === "number" ? item.score : parseFloat(item.score) || 0;
+              const matchPct = retriever === "bm25" 
+                ? Math.min(100, Math.round((scoreVal / 25) * 100)) 
+                : Math.min(100, Math.round(scoreVal * 100));
+
               return (
                 <tr key={index}>
                   <td>
-                    <span className="mono-text" style={{ fontWeight: 600, color: "var(--app-ink)" }}>
-                      #{index + 1}
+                    <span className="mono-text" style={{ fontSize: "12px", color: "var(--app-fog)" }}>
+                      {index + 1}
                     </span>
                   </td>
                   <td>
-                    <span className="mono-text" style={{ fontSize: "12px", color: "var(--app-steel)" }}>
-                      {retriever === "bm25" ? "BM25: " : "Sim: "}
-                      <strong>{item.score}</strong>
-                    </span>
-                  </td>
-                  <td>
-                    <span
-                      className={`pill-badge ${isItemFake ? "pill-fake" : "pill-real"}`}
-                      style={{ fontSize: "11px", padding: "2px 8px" }}
-                    >
+                    <span className={`tag-badge ${isItemFake ? "tag-fake" : "tag-real"}`}>
                       {item.label}
                     </span>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600, color: "var(--app-ink)", fontSize: "14px", marginBottom: "4px" }}>
-                      {item.title || "Untitled Article"}
+                    <div style={{ width: "70px" }}>
+                      <div className="d-flex justify-content-between align-items-center mb-1">
+                        <span className="mono-text" style={{ fontSize: "11px", color: "var(--app-steel)" }}>
+                          {item.score}
+                        </span>
+                      </div>
+                      <div style={{ height: "4px", backgroundColor: "var(--app-border-subtle)", borderRadius: "2px", overflow: "hidden" }}>
+                        <div style={{ width: `${Math.max(10, matchPct)}%`, height: "100%", backgroundColor: "var(--app-steel)" }} />
+                      </div>
                     </div>
-                    <div style={{ color: "var(--app-steel)", fontSize: "13px", lineHeight: "1.5" }}>
+                  </td>
+                  <td>
+                    <div style={{ fontWeight: 600, color: "var(--app-ink)", fontSize: "13.5px", marginBottom: "3px" }}>
+                      {item.title || "Untitled Reference Article"}
+                    </div>
+                    <div style={{ fontSize: "12.5px", color: "var(--app-fog)", lineHeight: "1.5" }}>
                       {item.snippet}
                     </div>
                   </td>
