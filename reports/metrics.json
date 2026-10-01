@@ -1,0 +1,358 @@
+{
+  "models": {
+    "nb": {
+      "accuracy": 0.8645,
+      "precision": 0.863,
+      "recall": 0.865,
+      "f1": 0.8637,
+      "roc_auc": 0.9385,
+      "train_time": "4.1s",
+      "best_params": {
+        "alpha": 0.1
+      }
+    },
+    "lr": {
+      "accuracy": 0.9527,
+      "precision": 0.9523,
+      "recall": 0.9522,
+      "f1": 0.9523,
+      "roc_auc": 0.9905,
+      "train_time": "4.9s",
+      "best_params": {
+        "C": 5.0
+      }
+    },
+    "svm": {
+      "accuracy": 0.9569,
+      "precision": 0.9564,
+      "recall": 0.9568,
+      "f1": 0.9566,
+      "roc_auc": 0.9916,
+      "train_time": "11.9s",
+      "best_params": {
+        "C": 0.5
+      }
+    }
+  },
+  "confusion_matrix": {
+    "tn": 6659,
+    "fp": 299,
+    "fn": 303,
+    "tp": 5462,
+    "total": 12723
+  },
+  "ablations": [
+    {
+      "id": "A1",
+      "name": "Vocabulary Size",
+      "variant": "Compact Vocab (10,000)",
+      "f1": 0.9477,
+      "note": "Reduced feature space"
+    },
+    {
+      "id": "A1",
+      "name": "Vocabulary Size",
+      "variant": "Full Vocab (30,000)",
+      "f1": 0.9523,
+      "note": "Optimal lexical coverage"
+    },
+    {
+      "id": "A2",
+      "name": "Normalization",
+      "variant": "No Normalization (Raw)",
+      "f1": 0.9485,
+      "note": "Retains inflected tokens"
+    },
+    {
+      "id": "A2",
+      "name": "Normalization",
+      "variant": "WordNet Lemmatization",
+      "f1": 0.9523,
+      "note": "Canonical dictionary roots"
+    },
+    {
+      "id": "A4",
+      "name": "Input Fields",
+      "variant": "Title Only",
+      "f1": 0.8883,
+      "note": "Short text constraint"
+    },
+    {
+      "id": "A4",
+      "name": "Input Fields",
+      "variant": "Title + Full Text",
+      "f1": 0.9523,
+      "note": "Comprehensive discourse features"
+    },
+    {
+      "id": "A7",
+      "name": "Artifact Removal",
+      "variant": "Source/Agency Markers Stripped",
+      "f1": 0.9419,
+      "note": "Measures reliance on agency tags"
+    },
+    {
+      "id": "A9",
+      "name": "Retrieval Engine",
+      "variant": "TF-IDF Cosine vs BM25 Okapi",
+      "f1": 0.9523,
+      "note": "High label-consistency on Top-K"
+    }
+  ],
+  "global_terms": {
+    "fake": [
+      {
+        "term": "reuters",
+        "weight": -41.9783,
+        "direction": "Fake"
+      },
+      {
+        "term": "breitbart",
+        "weight": -30.5336,
+        "direction": "Fake"
+      },
+      {
+        "term": "said",
+        "weight": -22.0269,
+        "direction": "Fake"
+      },
+      {
+        "term": "york",
+        "weight": -15.1476,
+        "direction": "Fake"
+      },
+      {
+        "term": "follow",
+        "weight": -12.4192,
+        "direction": "Fake"
+      },
+      {
+        "term": "twitter",
+        "weight": -10.8355,
+        "direction": "Fake"
+      },
+      {
+        "term": "thursday",
+        "weight": -9.8176,
+        "direction": "Fake"
+      },
+      {
+        "term": "washington",
+        "weight": -8.9679,
+        "direction": "Fake"
+      },
+      {
+        "term": "http",
+        "weight": -8.5161,
+        "direction": "Fake"
+      },
+      {
+        "term": "friday",
+        "weight": -8.4862,
+        "direction": "Fake"
+      },
+      {
+        "term": "tuesday",
+        "weight": -7.9863,
+        "direction": "Fake"
+      },
+      {
+        "term": "monday",
+        "weight": -7.3381,
+        "direction": "Fake"
+      },
+      {
+        "term": "wednesday",
+        "weight": -7.2233,
+        "direction": "Fake"
+      },
+      {
+        "term": "sunday",
+        "weight": -6.9779,
+        "direction": "Fake"
+      },
+      {
+        "term": "mr",
+        "weight": -6.3635,
+        "direction": "Fake"
+      },
+      {
+        "term": "new",
+        "weight": -6.0861,
+        "direction": "Fake"
+      },
+      {
+        "term": "saturday",
+        "weight": -5.797,
+        "direction": "Fake"
+      },
+      {
+        "term": "islamic",
+        "weight": -5.5285,
+        "direction": "Fake"
+      },
+      {
+        "term": "spokesman",
+        "weight": -5.3875,
+        "direction": "Fake"
+      },
+      {
+        "term": "milo",
+        "weight": -5.3399,
+        "direction": "Fake"
+      },
+      {
+        "term": "president",
+        "weight": -5.3142,
+        "direction": "Fake"
+      },
+      {
+        "term": "percent",
+        "weight": -4.9382,
+        "direction": "Fake"
+      },
+      {
+        "term": "last",
+        "weight": -4.7742,
+        "direction": "Fake"
+      },
+      {
+        "term": "london",
+        "weight": -4.7578,
+        "direction": "Fake"
+      },
+      {
+        "term": "minister",
+        "weight": -4.7299,
+        "direction": "Fake"
+      }
+    ],
+    "real": [
+      {
+        "term": "via",
+        "weight": 27.0666,
+        "direction": "Real"
+      },
+      {
+        "term": "video",
+        "weight": 16.5726,
+        "direction": "Real"
+      },
+      {
+        "term": "image",
+        "weight": 15.3165,
+        "direction": "Real"
+      },
+      {
+        "term": "october",
+        "weight": 14.6297,
+        "direction": "Real"
+      },
+      {
+        "term": "featured",
+        "weight": 12.9092,
+        "direction": "Real"
+      },
+      {
+        "term": "november",
+        "weight": 12.4163,
+        "direction": "Real"
+      },
+      {
+        "term": "breaking",
+        "weight": 10.5549,
+        "direction": "Real"
+      },
+      {
+        "term": "getty",
+        "weight": 10.141,
+        "direction": "Real"
+      },
+      {
+        "term": "read",
+        "weight": 10.0744,
+        "direction": "Real"
+      },
+      {
+        "term": "com",
+        "weight": 9.9935,
+        "direction": "Real"
+      },
+      {
+        "term": "hillary",
+        "weight": 9.6199,
+        "direction": "Real"
+      },
+      {
+        "term": "wire",
+        "weight": 8.2099,
+        "direction": "Real"
+      },
+      {
+        "term": "watch",
+        "weight": 8.19,
+        "direction": "Real"
+      },
+      {
+        "term": "anti",
+        "weight": 7.97,
+        "direction": "Real"
+      },
+      {
+        "term": "however",
+        "weight": 7.1904,
+        "direction": "Real"
+      },
+      {
+        "term": "un",
+        "weight": 6.8068,
+        "direction": "Real"
+      },
+      {
+        "term": "obama",
+        "weight": 6.4584,
+        "direction": "Real"
+      },
+      {
+        "term": "source",
+        "weight": 6.339,
+        "direction": "Real"
+      },
+      {
+        "term": "old",
+        "weight": 6.2083,
+        "direction": "Real"
+      },
+      {
+        "term": "according",
+        "weight": 5.9915,
+        "direction": "Real"
+      },
+      {
+        "term": "share",
+        "weight": 5.5467,
+        "direction": "Real"
+      },
+      {
+        "term": "cop",
+        "weight": 5.5318,
+        "direction": "Real"
+      },
+      {
+        "term": "rt",
+        "weight": 5.4747,
+        "direction": "Real"
+      },
+      {
+        "term": "america",
+        "weight": 5.4241,
+        "direction": "Real"
+      },
+      {
+        "term": "co",
+        "weight": 5.2659,
+        "direction": "Real"
+      }
+    ]
+  }
+}

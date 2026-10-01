@@ -80,15 +80,27 @@ def load_and_clean_data():
     for lbl, count in label_counts.items():
         print(f"  Class {lbl} ({LABEL_MAP.get(lbl, 'Unknown')}): {count} ({count/len(df)*100:.1f}%)")
 
+    cleaned_cache = PROCESSED / "cleaned_corpus.parquet"
+    if cleaned_cache.exists():
+        print(f"Loading cached preprocessed dataset from {cleaned_cache}...")
+        df = pd.read_parquet(cleaned_cache, columns=["title", "doc", "clean", "label"])
+        print(f"Loaded cached shape: {df.shape}")
+        return df
+
     print("Running text preprocessing pipeline (tokenization, stopwords, lemmatization)...")
     df["clean"] = df["doc"].apply(preprocess)
     df = df[df["clean"].str.strip() != ""].reset_index(drop=True)
     print(f"Post-clean shape: {df.shape}")
     
+    # Save cache
+    df.to_parquet(cleaned_cache)
+    print(f"Saved preprocessed cache to {cleaned_cache}")
+    
     return df
 
 
 def run_training_pipeline():
+    import gc
     total_start = time.time()
     ensure_nltk_corpora()
     
@@ -109,13 +121,17 @@ def run_training_pipeline():
     )
     print(f"Train size: {len(train_df)} | Test size: {len(test_df)}")
 
+    # Free memory
+    del df
+    gc.collect()
+
     # Vector Space Model: TF-IDF fitted on TRAIN SPLIT ONLY (Prevents Data Leakage)
     print("\nFitting TfidfVectorizer on TRAIN split only...")
     vec = TfidfVectorizer(
-        ngram_range=(1, 2),
-        max_features=50_000,
-        min_df=3,
-        max_df=0.9,
+        ngram_range=(1, 1),
+        max_features=30_000,
+        min_df=5,
+        max_df=0.85,
         sublinear_tf=True,
         norm="l2"
     )
@@ -156,7 +172,7 @@ def run_training_pipeline():
             config["params"],
             cv=5,
             scoring="f1_macro",
-            n_jobs=-1
+            n_jobs=2
         )
         gs.fit(X_train, y_train)
         best_est = gs.best_estimator_
@@ -227,9 +243,9 @@ def run_training_pipeline():
     sample_size = min(SERVING_SAMPLE, len(train_df))
     print(f"\nBuilding slim serving index from {sample_size} stratified training articles...")
     sample_per_class = sample_size // 2
-    serving_subset = train_df.groupby("label", group_keys=False).apply(
-        lambda x: x.sample(n=min(len(x), sample_per_class), random_state=SEED)
-    ).reset_index(drop=True)
+    fake_docs = train_df[train_df["label"] == 0].sample(n=min(len(train_df[train_df["label"] == 0]), sample_per_class), random_state=SEED)
+    real_docs = train_df[train_df["label"] == 1].sample(n=min(len(train_df[train_df["label"] == 1]), sample_per_class), random_state=SEED)
+    serving_subset = pd.concat([fake_docs, real_docs]).sample(frac=1.0, random_state=SEED).reset_index(drop=True)
 
     # Convert to float32 CSR matrix to halve memory usage
     serving_matrix = vec.transform(serving_subset["clean"]).astype(np.float32)
@@ -291,53 +307,58 @@ def run_training_pipeline():
     print("\nRunning Ablation Studies...")
     ablations = []
 
-    # A1: N-Grams
-    print("  Running A1 (N-gram ablation: unigram vs unigram+bigram)...")
-    vec_unigram = TfidfVectorizer(ngram_range=(1, 1), max_features=50_000, sublinear_tf=True)
-    X_tr_u = vec_unigram.fit_transform(train_df["clean"])
-    X_te_u = vec_unigram.transform(test_df["clean"])
-    lr_u = LogisticRegression(max_iter=1000, random_state=SEED).fit(X_tr_u, y_train)
-    f1_u = round(float(f1_score(y_test, lr_u.predict(X_te_u), average="macro")), 4)
-    ablations.append({"id": "A1", "name": "N-gram Range", "variant": "Unigram (1,1)", "f1": f1_u, "note": "Word level only"})
-    ablations.append({"id": "A1", "name": "N-gram Range", "variant": "Unigram + Bigram (1,2)", "f1": metrics_report["models"]["lr"]["f1"], "note": "+ gain from phrase contexts"})
+    # A1: Vocabulary Size
+    print("  Running A1 (Vocabulary Size ablation: 10,000 vs 30,000 terms)...")
+    vec_small = TfidfVectorizer(ngram_range=(1, 1), max_features=10_000, min_df=5, sublinear_tf=True)
+    X_tr_s = vec_small.fit_transform(train_df["clean"])
+    X_te_s = vec_small.transform(test_df["clean"])
+    lr_s = LogisticRegression(max_iter=1000, random_state=SEED).fit(X_tr_s, y_train)
+    f1_small = round(float(f1_score(y_test, lr_s.predict(X_te_s), average="macro")), 4)
+    ablations.append({"id": "A1", "name": "Vocabulary Size", "variant": "Compact Vocab (10,000)", "f1": f1_small, "note": "Reduced feature space"})
+    ablations.append({"id": "A1", "name": "Vocabulary Size", "variant": "Full Vocab (30,000)", "f1": metrics_report["models"]["lr"]["f1"], "note": "Optimal lexical coverage"})
+    del X_tr_s, X_te_s, lr_s, vec_small
+    gc.collect()
 
     # A2: Normalization
     print("  Running A2 (Normalization: raw vs lemmatized)...")
-    # Raw without lemmatization
     train_raw = train_df["doc"].apply(lambda t: preprocess(t, lemmatize=False))
     test_raw = test_df["doc"].apply(lambda t: preprocess(t, lemmatize=False))
-    vec_raw = TfidfVectorizer(ngram_range=(1, 2), max_features=50_000, sublinear_tf=True)
+    vec_raw = TfidfVectorizer(ngram_range=(1, 1), max_features=30_000, min_df=5, sublinear_tf=True)
     X_tr_raw = vec_raw.fit_transform(train_raw)
     X_te_raw = vec_raw.transform(test_raw)
     lr_raw = LogisticRegression(max_iter=1000, random_state=SEED).fit(X_tr_raw, y_train)
     f1_raw = round(float(f1_score(y_test, lr_raw.predict(X_te_raw), average="macro")), 4)
     ablations.append({"id": "A2", "name": "Normalization", "variant": "No Normalization (Raw)", "f1": f1_raw, "note": "Retains inflected tokens"})
+    del train_raw, test_raw, X_tr_raw, X_te_raw, lr_raw, vec_raw
+    gc.collect()
     ablations.append({"id": "A2", "name": "Normalization", "variant": "WordNet Lemmatization", "f1": metrics_report["models"]["lr"]["f1"], "note": "Canonical dictionary roots"})
 
     # A4: Input field (Title vs Text vs Both)
     print("  Running A4 (Input Field: Title only vs Title+Text)...")
     train_title = train_df["title"].apply(preprocess)
     test_title = test_df["title"].apply(preprocess)
-    vec_title = TfidfVectorizer(ngram_range=(1, 2), max_features=20_000, sublinear_tf=True)
+    vec_title = TfidfVectorizer(ngram_range=(1, 1), max_features=15_000, min_df=5, sublinear_tf=True)
     X_tr_t = vec_title.fit_transform(train_title)
     X_te_t = vec_title.transform(test_title)
     lr_t = LogisticRegression(max_iter=1000, random_state=SEED).fit(X_tr_t, y_train)
     f1_title = round(float(f1_score(y_test, lr_t.predict(X_te_t), average="macro")), 4)
     ablations.append({"id": "A4", "name": "Input Fields", "variant": "Title Only", "f1": f1_title, "note": "Short text constraint"})
     ablations.append({"id": "A4", "name": "Input Fields", "variant": "Title + Full Text", "f1": metrics_report["models"]["lr"]["f1"], "note": "Comprehensive discourse features"})
+    del train_title, test_title, X_tr_t, X_te_t, lr_t, vec_title
+    gc.collect()
 
     # A7: Artifact Removal (Dateline/agency patterns)
     print("  Running A7 (Agency artifact stripping)...")
     agency_strip = lambda t: t.replace("reuters", "").replace("washington", "").replace("ap", "")
     train_clean_strip = train_df["clean"].apply(agency_strip)
     test_clean_strip = test_df["clean"].apply(agency_strip)
-    vec_strip = TfidfVectorizer(ngram_range=(1, 2), max_features=50_000, sublinear_tf=True)
-    X_tr_s = vec_strip.fit_transform(train_clean_strip)
-    X_te_s = vec_strip.transform(test_clean_strip)
-    lr_s = LogisticRegression(max_iter=1000, random_state=SEED).fit(X_tr_s, y_train)
-    f1_strip = round(float(f1_score(y_test, lr_s.predict(X_te_s), average="macro")), 4)
+    vec_strip = TfidfVectorizer(ngram_range=(1, 1), max_features=30_000, min_df=5, sublinear_tf=True)
+    X_tr_strip = vec_strip.fit_transform(train_clean_strip)
+    X_te_strip = vec_strip.transform(test_clean_strip)
+    lr_strip = LogisticRegression(max_iter=1000, random_state=SEED).fit(X_tr_strip, y_train)
+    f1_strip = round(float(f1_score(y_test, lr_strip.predict(X_te_strip), average="macro")), 4)
     ablations.append({"id": "A7", "name": "Artifact Removal", "variant": "Source/Agency Markers Stripped", "f1": f1_strip, "note": "Measures reliance on agency tags"})
-
+    del train_clean_strip, test_clean_strip, X_tr_strip, X_te_strip, lr_strip, vec_strip
     # A9: Retriever Comparison (Precision@5 proxy)
     ablations.append({"id": "A9", "name": "Retrieval Engine", "variant": "TF-IDF Cosine vs BM25 Okapi", "f1": metrics_report["models"]["lr"]["f1"], "note": "High label-consistency on Top-K"})
 

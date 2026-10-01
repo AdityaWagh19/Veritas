@@ -7,4 +7,5 @@ __pycache__/
 .vercel/
 data/raw/
 data/processed/
+ml/nltk_data/
 # Note: models/ is intentionally NOT ignored so Vercel can bundle the trained artifacts

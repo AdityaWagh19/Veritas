@@ -17,16 +17,25 @@ EMAIL_PATTERN = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b
 NON_ALPHA_PATTERN = re.compile(r"[^a-z\s]")
 WHITESPACE_PATTERN = re.compile(r"\s+")
 
-# Fallback in case stopwords or wordnet aren't downloaded yet (e.g. during initial bootstrapping)
 try:
     STOP_WORDS = set(stopwords.words("english"))
 except LookupError:
-    STOP_WORDS = set()
+    try:
+        nltk.download("stopwords", quiet=True)
+        STOP_WORDS = set(stopwords.words("english"))
+    except Exception:
+        STOP_WORDS = set()
 
 try:
     LEMMATIZER = WordNetLemmatizer()
+    LEMMATIZER.lemmatize("running")
 except LookupError:
-    LEMMATIZER = None
+    try:
+        nltk.download("wordnet", quiet=True)
+        nltk.download("omw-1.4", quiet=True)
+        LEMMATIZER = WordNetLemmatizer()
+    except Exception:
+        LEMMATIZER = None
 
 STEMMER = PorterStemmer()
 

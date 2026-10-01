@@ -19,8 +19,13 @@ def tfidf_topk(query_vec: sparse.csr_matrix, corpus_matrix: sparse.csr_matrix, k
     
     # Efficient top-k partition
     k = min(k, len(scores))
-    candidate_idx = np.argpartition(-scores, k)[:k]
-    sorted_top_idx = candidate_idx[np.argsort(-scores[candidate_idx])]
+    if k == 0:
+        return np.array([], dtype=int), np.array([], dtype=float)
+    if k >= len(scores):
+        sorted_top_idx = np.argsort(-scores)
+    else:
+        candidate_idx = np.argpartition(-scores, k)[:k]
+        sorted_top_idx = candidate_idx[np.argsort(-scores[candidate_idx])]
     
     return sorted_top_idx, scores[sorted_top_idx]
 
