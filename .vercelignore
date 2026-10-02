@@ -3,5 +3,10 @@ notebooks/
 docs/
 tests/
 reports/figures/
+reports/*.png
 .venv/
 node_modules/
+ml/nltk_data/
+models/*.joblib
+models/serving_matrix.npz
+.git/

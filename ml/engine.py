@@ -1,21 +1,39 @@
 import numpy as np
-from scipy import sparse
 from rank_bm25 import BM25Okapi
 from ml.config import LABEL_MAP
+
+try:
+    from scipy import sparse
+except ImportError:
+    sparse = None
 
 # -----------------------------------------------------------------------------
 # 1. Retrieval Engine: Vector Space Model (TF-IDF Cosine) & BM25 Ranking
 # -----------------------------------------------------------------------------
 
-def tfidf_topk(query_vec: sparse.csr_matrix, corpus_matrix: sparse.csr_matrix, k: int = 5):
+def tfidf_topk(query_vec, corpus_matrix, k: int = 5):
     """
     Ranked retrieval using the Vector Space Model with Cosine Similarity.
-    Because corpus_matrix and query_vec are L2-normalized, cosine similarity
-    is equivalent to the sparse matrix-vector dot product.
+    Supports either LightweightCSCMatrix (pure numpy) or scipy sparse matrix.
     Returns: (top_indices, similarity_scores)
     """
-    # Sparse matrix multiplication: shape (N, 1) -> flat array
-    scores = (corpus_matrix @ query_vec.T).toarray().ravel()
+    if hasattr(corpus_matrix, "dot_sparse"):
+        if isinstance(query_vec, tuple):
+            cols, vals = query_vec
+            scores = corpus_matrix.dot_sparse(cols, vals)
+        elif hasattr(query_vec, "indices") and hasattr(query_vec, "data"):
+            scores = corpus_matrix.dot_sparse(query_vec.indices, query_vec.data)
+        else:
+            scores = np.zeros(corpus_matrix.shape[0], dtype=np.float32)
+    elif hasattr(corpus_matrix, "__matmul__") or hasattr(corpus_matrix, "dot"):
+        if hasattr(query_vec, "T"):
+            res = corpus_matrix @ query_vec.T
+            scores = res.toarray().ravel() if hasattr(res, "toarray") else np.asarray(res).ravel()
+        else:
+            res = corpus_matrix @ query_vec
+            scores = res.toarray().ravel() if hasattr(res, "toarray") else np.asarray(res).ravel()
+    else:
+        scores = np.array([], dtype=np.float32)
     
     # Efficient top-k partition
     k = min(k, len(scores))
@@ -32,8 +50,8 @@ def tfidf_topk(query_vec: sparse.csr_matrix, corpus_matrix: sparse.csr_matrix, k
 def bm25_topk(
     query_tokens: list[str],
     corpus_tokens: list[list[str]],
-    corpus_matrix: sparse.csr_matrix,
-    query_vec: sparse.csr_matrix,
+    corpus_matrix,
+    query_vec,
     candidate_pool_size: int = 200,
     k: int = 5
 ):
@@ -132,14 +150,35 @@ def get_local_term_contributions(vectorizer, lr_model, text_clean: str, top_n: i
     Compute local term contributions for an individual prediction:
     contribution(term) = tfidf_value(term) * coef(term)
     Direction is assigned based on whether contribution pushes toward Fake or Real.
+    Supports both LightweightVectorizer and scikit-learn TfidfVectorizer.
     """
     if not text_clean:
         return []
-        
-    x = vectorizer.transform([text_clean])
+
     coefs = lr_model.coef_[0]
     
-    # Element-wise product of sparse tfidf vector and model coefficients
+    # Lightweight vectorizer branch (pure NumPy)
+    if hasattr(vectorizer, "transform_sparse"):
+        cols, vals = vectorizer.transform_sparse(text_clean)
+        if len(cols) == 0:
+            return []
+        feature_names = vectorizer.feature_names
+        pairs = []
+        for col_idx, weight in zip(cols, vals):
+            w = float(weight * coefs[col_idx])
+            term = str(feature_names[col_idx])
+            direction = "Fake" if w > 0 else "Real"
+            pairs.append({
+                "term": term,
+                "weight": round(w, 4),
+                "abs_weight": abs(w),
+                "direction": direction
+            })
+        pairs.sort(key=lambda p: p["abs_weight"], reverse=True)
+        return pairs[:top_n]
+        
+    # Scikit-learn vectorizer branch
+    x = vectorizer.transform([text_clean])
     contributions = x.multiply(coefs).tocoo()
     
     if contributions.nnz == 0:
@@ -150,7 +189,6 @@ def get_local_term_contributions(vectorizer, lr_model, text_clean: str, top_n: i
     
     for col_idx, weight in zip(contributions.col, contributions.data):
         term = feature_names[col_idx]
-        # In WELFake (0=Real, 1=Fake): positive weight pushes to Fake, negative to Real
         direction = "Fake" if weight > 0 else "Real"
         pairs.append({
             "term": term,

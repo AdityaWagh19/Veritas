@@ -156,8 +156,8 @@ def analyse_route(req: AnalyseRequest):
         
     try:
         result = analyse(
-            raw_title=req.title,
-            raw_text=req.text,
+            raw_title=title,
+            raw_text=text,
             model_name=req.model,
             retriever=req.retriever,
             k=req.k
