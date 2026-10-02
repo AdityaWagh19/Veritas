@@ -375,7 +375,12 @@ def run_training_pipeline():
     # Save metrics.json
     with open(REPORTS / "metrics.json", "w", encoding="utf-8") as f:
         json.dump(metrics_report, f, indent=2)
-    print(f"\nFinal metrics report saved to {REPORTS / 'metrics.json'}")
+    # Export lightweight NumPy serving weights for zero-dependency runtime
+    try:
+        from ml.export_lightweight import export_all
+        export_all()
+    except Exception as e:
+        print(f"Warning: Could not export lightweight weights: {e}")
 
     print(f"\nPipeline training successfully finished in {time.time() - total_start:.1f}s!")
 

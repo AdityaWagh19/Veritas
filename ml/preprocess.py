@@ -31,10 +31,6 @@ LEMMATIZER = None
 STEMMER = None
 
 try:
-    import nltk
-    from ml.config import NLTK_DATA
-    if str(NLTK_DATA) not in nltk.data.path:
-        nltk.data.path.insert(0, str(NLTK_DATA))
     from nltk.stem import WordNetLemmatizer, PorterStemmer
     LEMMATIZER = WordNetLemmatizer()
     STEMMER = PorterStemmer()

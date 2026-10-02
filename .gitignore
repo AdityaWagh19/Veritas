@@ -1,11 +1,33 @@
+# Environments & dependencies
 .venv/
 node_modules/
 dist/
+
+# Python & testing cache
 __pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Notebooks & IDE
 .ipynb_checkpoints/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Deployment & secrets
 .env*
 .vercel/
+
+# Heavy local dataset & intermediate files
 data/raw/
 data/processed/
 ml/nltk_data/
-# Note: models/ is intentionally NOT ignored so Vercel can bundle the trained artifacts
+
+# Heavy training intermediate files (production serving uses models/serving_weights.npz & serving_meta.json.gz)
+models/*.joblib
+models/serving_matrix.npz

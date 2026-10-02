@@ -6,7 +6,6 @@ RAW = ROOT / "data" / "raw" / "WELFake_Dataset.csv"
 PROCESSED = ROOT / "data" / "processed"
 MODELS = ROOT / "models"
 REPORTS = ROOT / "reports"
-NLTK_DATA = ROOT / "ml" / "nltk_data"
 
 # Reproducibility & Model Hyperparameters
 SEED = 42
