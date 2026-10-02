@@ -1,44 +1,44 @@
 {
   "models": {
     "nb": {
-      "accuracy": 0.8645,
-      "precision": 0.863,
-      "recall": 0.865,
-      "f1": 0.8637,
-      "roc_auc": 0.9385,
-      "train_time": "4.1s",
+      "accuracy": 0.8615,
+      "precision": 0.86,
+      "recall": 0.8621,
+      "f1": 0.8607,
+      "roc_auc": 0.9372,
+      "train_time": "3.7s",
       "best_params": {
         "alpha": 0.1
       }
     },
     "lr": {
-      "accuracy": 0.9527,
-      "precision": 0.9523,
-      "recall": 0.9522,
-      "f1": 0.9523,
-      "roc_auc": 0.9905,
-      "train_time": "4.9s",
+      "accuracy": 0.9563,
+      "precision": 0.9558,
+      "recall": 0.956,
+      "f1": 0.9559,
+      "roc_auc": 0.9911,
+      "train_time": "5.4s",
       "best_params": {
         "C": 5.0
       }
     },
     "svm": {
-      "accuracy": 0.9569,
+      "accuracy": 0.957,
       "precision": 0.9564,
-      "recall": 0.9568,
+      "recall": 0.9569,
       "f1": 0.9566,
-      "roc_auc": 0.9916,
-      "train_time": "11.9s",
+      "roc_auc": 0.9915,
+      "train_time": "12.2s",
       "best_params": {
         "C": 0.5
       }
     }
   },
   "confusion_matrix": {
-    "tn": 6659,
-    "fp": 299,
-    "fn": 303,
-    "tp": 5462,
+    "tn": 6673,
+    "fp": 285,
+    "fn": 271,
+    "tp": 5494,
     "total": 12723
   },
   "ablations": [
@@ -46,14 +46,14 @@
       "id": "A1",
       "name": "Vocabulary Size",
       "variant": "Compact Vocab (10,000)",
-      "f1": 0.9477,
+      "f1": 0.9476,
       "note": "Reduced feature space"
     },
     {
       "id": "A1",
       "name": "Vocabulary Size",
-      "variant": "Full Vocab (30,000)",
-      "f1": 0.9523,
+      "variant": "Full Vocab (25,000)",
+      "f1": 0.9559,
       "note": "Optimal lexical coverage"
     },
     {
@@ -67,7 +67,7 @@
       "id": "A2",
       "name": "Normalization",
       "variant": "WordNet Lemmatization",
-      "f1": 0.9523,
+      "f1": 0.9559,
       "note": "Canonical dictionary roots"
     },
     {
@@ -81,7 +81,7 @@
       "id": "A4",
       "name": "Input Fields",
       "variant": "Title + Full Text",
-      "f1": 0.9523,
+      "f1": 0.9559,
       "note": "Comprehensive discourse features"
     },
     {
@@ -95,262 +95,262 @@
       "id": "A9",
       "name": "Retrieval Engine",
       "variant": "TF-IDF Cosine vs BM25 Okapi",
-      "f1": 0.9523,
+      "f1": 0.9559,
       "note": "High label-consistency on Top-K"
     }
   ],
   "global_terms": {
     "fake": [
       {
-        "term": "reuters",
-        "weight": -41.9783,
+        "term": "via",
+        "weight": 28.7244,
         "direction": "Fake"
       },
       {
-        "term": "breitbart",
-        "weight": -30.5336,
+        "term": "video",
+        "weight": 13.4527,
         "direction": "Fake"
       },
       {
-        "term": "said",
-        "weight": -22.0269,
+        "term": "october",
+        "weight": 12.8659,
         "direction": "Fake"
       },
       {
-        "term": "york",
-        "weight": -15.1476,
+        "term": "image",
+        "weight": 12.0811,
         "direction": "Fake"
       },
       {
-        "term": "follow",
-        "weight": -12.4192,
+        "term": "featured",
+        "weight": 11.5801,
         "direction": "Fake"
       },
       {
-        "term": "twitter",
-        "weight": -10.8355,
+        "term": "breaking",
+        "weight": 11.244,
         "direction": "Fake"
       },
       {
-        "term": "thursday",
-        "weight": -9.8176,
+        "term": "november",
+        "weight": 10.9574,
         "direction": "Fake"
       },
       {
-        "term": "washington",
-        "weight": -8.9679,
+        "term": "com",
+        "weight": 10.733,
         "direction": "Fake"
       },
       {
-        "term": "http",
-        "weight": -8.5161,
+        "term": "getty",
+        "weight": 10.1168,
         "direction": "Fake"
       },
       {
-        "term": "friday",
-        "weight": -8.4862,
+        "term": "hillary",
+        "weight": 9.8631,
         "direction": "Fake"
       },
       {
-        "term": "tuesday",
-        "weight": -7.9863,
+        "term": "read",
+        "weight": 9.2565,
         "direction": "Fake"
       },
       {
-        "term": "monday",
-        "weight": -7.3381,
+        "term": "wire",
+        "weight": 8.7262,
         "direction": "Fake"
       },
       {
-        "term": "wednesday",
-        "weight": -7.2233,
+        "term": "anti",
+        "weight": 7.5564,
         "direction": "Fake"
       },
       {
-        "term": "sunday",
-        "weight": -6.9779,
+        "term": "watch",
+        "weight": 6.5772,
         "direction": "Fake"
       },
       {
-        "term": "mr",
-        "weight": -6.3635,
+        "term": "however",
+        "weight": 6.3491,
         "direction": "Fake"
       },
       {
-        "term": "new",
-        "weight": -6.0861,
+        "term": "wow",
+        "weight": 6.2523,
         "direction": "Fake"
       },
       {
-        "term": "saturday",
-        "weight": -5.797,
+        "term": "cop",
+        "weight": 6.0786,
         "direction": "Fake"
       },
       {
-        "term": "islamic",
-        "weight": -5.5285,
+        "term": "sputnik",
+        "weight": 6.0364,
         "direction": "Fake"
       },
       {
-        "term": "spokesman",
-        "weight": -5.3875,
+        "term": "un",
+        "weight": 5.7589,
         "direction": "Fake"
       },
       {
-        "term": "milo",
-        "weight": -5.3399,
+        "term": "old",
+        "weight": 5.699,
         "direction": "Fake"
       },
       {
-        "term": "president",
-        "weight": -5.3142,
+        "term": "co",
+        "weight": 5.536,
         "direction": "Fake"
       },
       {
-        "term": "percent",
-        "weight": -4.9382,
+        "term": "ny",
+        "weight": 5.522,
         "direction": "Fake"
       },
       {
-        "term": "last",
-        "weight": -4.7742,
+        "term": "source",
+        "weight": 5.5166,
         "direction": "Fake"
       },
       {
-        "term": "london",
-        "weight": -4.7578,
+        "term": "snip",
+        "weight": 5.5002,
         "direction": "Fake"
       },
       {
-        "term": "minister",
-        "weight": -4.7299,
+        "term": "non",
+        "weight": 5.417,
         "direction": "Fake"
       }
     ],
     "real": [
       {
-        "term": "via",
-        "weight": 27.0666,
+        "term": "reuters",
+        "weight": -45.0044,
         "direction": "Real"
       },
       {
-        "term": "video",
-        "weight": 16.5726,
+        "term": "breitbart",
+        "weight": -27.3429,
         "direction": "Real"
       },
       {
-        "term": "image",
-        "weight": 15.3165,
+        "term": "said",
+        "weight": -18.9587,
         "direction": "Real"
       },
       {
-        "term": "october",
-        "weight": 14.6297,
+        "term": "york",
+        "weight": -15.7877,
         "direction": "Real"
       },
       {
-        "term": "featured",
-        "weight": 12.9092,
+        "term": "http",
+        "weight": -10.8551,
         "direction": "Real"
       },
       {
-        "term": "november",
-        "weight": 12.4163,
+        "term": "follow",
+        "weight": -9.8842,
         "direction": "Real"
       },
       {
-        "term": "breaking",
-        "weight": 10.5549,
+        "term": "thursday",
+        "weight": -8.9455,
         "direction": "Real"
       },
       {
-        "term": "getty",
-        "weight": 10.141,
+        "term": "twitter",
+        "weight": -8.445,
         "direction": "Real"
       },
       {
-        "term": "read",
-        "weight": 10.0744,
+        "term": "friday",
+        "weight": -7.2192,
         "direction": "Real"
       },
       {
-        "term": "com",
-        "weight": 9.9935,
+        "term": "mr",
+        "weight": -7.0899,
         "direction": "Real"
       },
       {
-        "term": "hillary",
-        "weight": 9.6199,
+        "term": "tuesday",
+        "weight": -7.0407,
         "direction": "Real"
       },
       {
-        "term": "wire",
-        "weight": 8.2099,
+        "term": "washington",
+        "weight": -7.0032,
         "direction": "Real"
       },
       {
-        "term": "watch",
-        "weight": 8.19,
+        "term": "wednesday",
+        "weight": -6.9251,
         "direction": "Real"
       },
       {
-        "term": "anti",
-        "weight": 7.97,
+        "term": "sunday",
+        "weight": -6.6319,
         "direction": "Real"
       },
       {
-        "term": "however",
-        "weight": 7.1904,
+        "term": "monday",
+        "weight": -6.621,
         "direction": "Real"
       },
       {
-        "term": "un",
-        "weight": 6.8068,
+        "term": "saturday",
+        "weight": -5.6101,
         "direction": "Real"
       },
       {
-        "term": "obama",
-        "weight": 6.4584,
+        "term": "new",
+        "weight": -5.5743,
         "direction": "Real"
       },
       {
-        "term": "source",
-        "weight": 6.339,
+        "term": "last",
+        "weight": -5.3246,
         "direction": "Real"
       },
       {
-        "term": "old",
-        "weight": 6.2083,
+        "term": "jerome",
+        "weight": -5.2743,
         "direction": "Real"
       },
       {
-        "term": "according",
-        "weight": 5.9915,
+        "term": "jeromeehudson",
+        "weight": -5.2405,
         "direction": "Real"
       },
       {
-        "term": "share",
-        "weight": 5.5467,
+        "term": "president",
+        "weight": -5.0768,
         "direction": "Real"
       },
       {
-        "term": "cop",
-        "weight": 5.5318,
+        "term": "london",
+        "weight": -4.9119,
         "direction": "Real"
       },
       {
-        "term": "rt",
-        "weight": 5.4747,
+        "term": "milo",
+        "weight": -4.895,
         "direction": "Real"
       },
       {
-        "term": "america",
-        "weight": 5.4241,
+        "term": "quote",
+        "weight": -4.8879,
         "direction": "Real"
       },
       {
-        "term": "co",
-        "weight": 5.2659,
+        "term": "critic",
+        "weight": -4.8762,
         "direction": "Real"
       }
     ]

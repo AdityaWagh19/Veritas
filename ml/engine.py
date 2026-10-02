@@ -79,9 +79,9 @@ def calculate_neighbour_vote(labels: list[int] | np.ndarray, top_indices: np.nda
         
     top_labels = np.array([labels[i] for i in top_indices])
     
-    # In WELFake convention: 0 = Fake, 1 = Real
-    fake_count = int(np.sum(top_labels == 0))
-    real_count = int(np.sum(top_labels == 1))
+    # In WELFake convention: 0 = Real, 1 = Fake
+    fake_count = int(np.sum(top_labels == 1))
+    real_count = int(np.sum(top_labels == 0))
     total = len(top_labels)
     
     fake_pct = round(fake_count / total, 3)
@@ -104,23 +104,24 @@ def calculate_neighbour_vote(labels: list[int] | np.ndarray, top_indices: np.nda
 def get_global_influential_terms(vectorizer, lr_model, top_n: int = 25):
     """
     Extract global terms with highest magnitude coefficients from Logistic Regression.
-    In WELFake binary classification (0 = Fake, 1 = Real):
-    - Negative coefficients push toward class 0 (Fake)
-    - Positive coefficients push toward class 1 (Real)
+    In WELFake binary classification (0 = Real, 1 = Fake):
+    - Negative coefficients push toward class 0 (Real)
+    - Positive coefficients push toward class 1 (Fake)
     """
     feature_names = np.array(vectorizer.get_feature_names_out())
     coefs = lr_model.coef_[0]
     
-    # Sort ascending: most negative first (Fake-driving) -> most positive last (Real-driving)
     sorted_indices = np.argsort(coefs)
     
-    fake_terms = [
-        {"term": feature_names[i], "weight": round(float(coefs[i]), 4), "direction": "Fake"}
+    # Most negative push to class 0 (Real)
+    real_terms = [
+        {"term": feature_names[i], "weight": round(float(coefs[i]), 4), "direction": "Real"}
         for i in sorted_indices[:top_n]
     ]
     
-    real_terms = [
-        {"term": feature_names[i], "weight": round(float(coefs[i]), 4), "direction": "Real"}
+    # Most positive push to class 1 (Fake)
+    fake_terms = [
+        {"term": feature_names[i], "weight": round(float(coefs[i]), 4), "direction": "Fake"}
         for i in sorted_indices[-top_n:][::-1]
     ]
     
@@ -149,8 +150,8 @@ def get_local_term_contributions(vectorizer, lr_model, text_clean: str, top_n: i
     
     for col_idx, weight in zip(contributions.col, contributions.data):
         term = feature_names[col_idx]
-        # In WELFake (0=Fake, 1=Real): negative weight pushes to Fake, positive to Real
-        direction = "Real" if weight > 0 else "Fake"
+        # In WELFake (0=Real, 1=Fake): positive weight pushes to Fake, negative to Real
+        direction = "Fake" if weight > 0 else "Real"
         pairs.append({
             "term": term,
             "weight": round(float(weight), 4),

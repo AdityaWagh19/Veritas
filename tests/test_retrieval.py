@@ -22,8 +22,8 @@ def test_tfidf_topk_ranking():
     assert np.isclose(scores[0], 1.0, atol=1e-3)
 
 def test_calculate_neighbour_vote():
-    # 5 retrieved labels (0 = Fake, 1 = Real)
-    labels = [0, 0, 0, 1, 0]
+    # 5 retrieved labels (0 = Real, 1 = Fake)
+    labels = [1, 1, 1, 0, 1]
     indices = np.array([0, 1, 2, 3, 4])
     
     vote = calculate_neighbour_vote(labels, indices)

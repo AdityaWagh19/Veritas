@@ -53,7 +53,15 @@ def ensure_nltk_corpora():
 
 
 def load_and_clean_data():
-    """Load raw WELFake dataset, handle nulls and duplicates, and preprocess."""
+    """Load raw WELFake dataset or cached preprocessed parquet."""
+    cleaned_cache = PROCESSED / "cleaned_corpus.parquet"
+    if cleaned_cache.exists():
+        print(f"Loading cached preprocessed dataset from {cleaned_cache}...")
+        import pyarrow.parquet as pq
+        df = pq.read_table(cleaned_cache, columns=["title", "doc", "clean", "label"]).to_pandas()
+        print(f"Loaded cached shape: {df.shape}")
+        return df
+
     print(f"Loading raw dataset from {RAW}...")
     df = pd.read_csv(RAW)
     print(f"Raw shape: {df.shape}")
@@ -129,8 +137,8 @@ def run_training_pipeline():
     print("\nFitting TfidfVectorizer on TRAIN split only...")
     vec = TfidfVectorizer(
         ngram_range=(1, 1),
-        max_features=30_000,
-        min_df=5,
+        max_features=25_000,
+        min_df=10,
         max_df=0.85,
         sublinear_tf=True,
         norm="l2"
@@ -243,8 +251,8 @@ def run_training_pipeline():
     sample_size = min(SERVING_SAMPLE, len(train_df))
     print(f"\nBuilding slim serving index from {sample_size} stratified training articles...")
     sample_per_class = sample_size // 2
-    fake_docs = train_df[train_df["label"] == 0].sample(n=min(len(train_df[train_df["label"] == 0]), sample_per_class), random_state=SEED)
-    real_docs = train_df[train_df["label"] == 1].sample(n=min(len(train_df[train_df["label"] == 1]), sample_per_class), random_state=SEED)
+    fake_docs = train_df[train_df["label"] == 1].sample(n=min(len(train_df[train_df["label"] == 1]), sample_per_class), random_state=SEED)
+    real_docs = train_df[train_df["label"] == 0].sample(n=min(len(train_df[train_df["label"] == 0]), sample_per_class), random_state=SEED)
     serving_subset = pd.concat([fake_docs, real_docs]).sample(frac=1.0, random_state=SEED).reset_index(drop=True)
 
     # Convert to float32 CSR matrix to halve memory usage
@@ -272,10 +280,10 @@ def run_training_pipeline():
     test_samples = test_df.copy()
     test_samples["pred_proba"] = trained_models["lr"].predict_proba(X_test)[:, 1]
     
-    # 1 clear fake (label 0, lowest proba)
-    fake_sample = test_samples[test_samples["label"] == 0].sort_values("pred_proba").iloc[0]
-    # 1 clear real (label 1, highest proba)
-    real_sample = test_samples[test_samples["label"] == 1].sort_values("pred_proba", ascending=False).iloc[0]
+    # 1 clear fake (label 1 in WELFake, highest proba for class 1)
+    fake_sample = test_samples[test_samples["label"] == 1].sort_values("pred_proba", ascending=False).iloc[0]
+    # 1 clear real (label 0 in WELFake, lowest proba for class 1)
+    real_sample = test_samples[test_samples["label"] == 0].sort_values("pred_proba").iloc[0]
     # 1 borderline sample (closest to 0.5)
     borderline_sample = test_samples.iloc[(test_samples["pred_proba"] - 0.5).abs().argsort()[:1]].iloc[0]
 
@@ -308,14 +316,14 @@ def run_training_pipeline():
     ablations = []
 
     # A1: Vocabulary Size
-    print("  Running A1 (Vocabulary Size ablation: 10,000 vs 30,000 terms)...")
-    vec_small = TfidfVectorizer(ngram_range=(1, 1), max_features=10_000, min_df=5, sublinear_tf=True)
+    print("  Running A1 (Vocabulary Size ablation: 10,000 vs 25,000 terms)...")
+    vec_small = TfidfVectorizer(ngram_range=(1, 1), max_features=10_000, min_df=10, sublinear_tf=True)
     X_tr_s = vec_small.fit_transform(train_df["clean"])
     X_te_s = vec_small.transform(test_df["clean"])
     lr_s = LogisticRegression(max_iter=1000, random_state=SEED).fit(X_tr_s, y_train)
     f1_small = round(float(f1_score(y_test, lr_s.predict(X_te_s), average="macro")), 4)
     ablations.append({"id": "A1", "name": "Vocabulary Size", "variant": "Compact Vocab (10,000)", "f1": f1_small, "note": "Reduced feature space"})
-    ablations.append({"id": "A1", "name": "Vocabulary Size", "variant": "Full Vocab (30,000)", "f1": metrics_report["models"]["lr"]["f1"], "note": "Optimal lexical coverage"})
+    ablations.append({"id": "A1", "name": "Vocabulary Size", "variant": "Full Vocab (25,000)", "f1": metrics_report["models"]["lr"]["f1"], "note": "Optimal lexical coverage"})
     del X_tr_s, X_te_s, lr_s, vec_small
     gc.collect()
 

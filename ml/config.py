@@ -14,7 +14,6 @@ TEST_SIZE = 0.20
 MAX_CHARS = 3000
 SERVING_SAMPLE = 15_000  # Number of stratified articles in the live retrieval index
 
-# Class Label Mapping (WELFake: 0 = Fake, 1 = Real)
-# Documented and verified against manual samples in Section 6.2 of the project spec
-LABEL_MAP = {0: "Fake", 1: "Real"}
-INV_LABEL_MAP = {"Fake": 0, "Real": 1}
+# Class Label Mapping (WELFake official paper: 0 = Real, 1 = Fake)
+LABEL_MAP = {0: "Real", 1: "Fake"}
+INV_LABEL_MAP = {"Real": 0, "Fake": 1}

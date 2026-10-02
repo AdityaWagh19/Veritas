@@ -186,7 +186,7 @@ export default function DashboardView() {
                       {cm.tn.toLocaleString()}
                     </div>
                     <div style={{ fontSize: "11px", color: "var(--app-real-ink)", textTransform: "uppercase", marginTop: "2px" }}>
-                      Correct Fake (95.7%)
+                      Correct Real (95.2%)
                     </div>
                   </div>
                 </div>
@@ -197,7 +197,7 @@ export default function DashboardView() {
                       {cm.fp.toLocaleString()}
                     </div>
                     <div style={{ fontSize: "11px", color: "var(--app-fake-ink)", textTransform: "uppercase", marginTop: "2px" }}>
-                      False Alarm (2.3%)
+                      False Alarm (2.4%)
                     </div>
                   </div>
                 </div>
@@ -208,7 +208,7 @@ export default function DashboardView() {
                       {cm.fn.toLocaleString()}
                     </div>
                     <div style={{ fontSize: "11px", color: "var(--app-fake-ink)", textTransform: "uppercase", marginTop: "2px" }}>
-                      Missed Fake (2.4%)
+                      Missed Fake (2.3%)
                     </div>
                   </div>
                 </div>
@@ -219,7 +219,7 @@ export default function DashboardView() {
                       {cm.tp.toLocaleString()}
                     </div>
                     <div style={{ fontSize: "11px", color: "var(--app-real-ink)", textTransform: "uppercase", marginTop: "2px" }}>
-                      Correct Real (94.7%)
+                      Correct Fake (95.7%)
                     </div>
                   </div>
                 </div>
