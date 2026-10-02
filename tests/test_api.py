@@ -20,3 +20,9 @@ def test_api_validation_invalid_model():
     res = client.post("/api/analyse", json={"text": text_20_words, "model": "invalid_model"})
     assert res.status_code == 422
     assert "Invalid model" in res.json()["error"]
+
+def test_api_extract_url_validation():
+    res = client.post("/api/extract-url", json={"url": "not-a-valid-url"})
+    assert res.status_code == 400
+    assert "valid web URL" in res.json()["error"]
+

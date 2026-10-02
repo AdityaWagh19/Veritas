@@ -53,3 +53,21 @@ export async function getSamples() {
     return [];
   }
 }
+
+/**
+ * Extract article headline and text from a public web URL.
+ */
+export async function extractFromUrl(url) {
+  const res = await fetch(`${BASE_URL}/api/extract-url`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || "Failed to extract article from URL.");
+  }
+  return data;
+}
+
