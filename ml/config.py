@@ -12,7 +12,7 @@ NLTK_DATA = ROOT / "ml" / "nltk_data"
 SEED = 42
 TEST_SIZE = 0.20
 MAX_CHARS = 3000
-SERVING_SAMPLE = 15_000  # Number of stratified articles in the live retrieval index
+SERVING_SAMPLE = 8_000  # Number of stratified articles in the live retrieval index
 
 # Class Label Mapping (WELFake official paper: 0 = Real, 1 = Fake)
 LABEL_MAP = {0: "Real", 1: "Fake"}
